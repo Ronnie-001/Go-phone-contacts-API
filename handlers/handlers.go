@@ -15,12 +15,17 @@ import (
 type Home struct{}
 
 func (h *Home) GoHome(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("test"))
+	w.Write([]byte("HAHA"))
 } 
 
 type ContactsHandler struct{
-	db *pgxpool.Pool
+	Db *pgxpool.Pool
 }
+
+func (ch *ContactsHandler) Test(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("testing"))
+}
+
 
 func (ch *ContactsHandler) AddContact(w http.ResponseWriter, r *http.Request) {
 	var newContact models.Contact
@@ -32,8 +37,8 @@ func (ch *ContactsHandler) AddContact(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create & execute SQL statement to add Contact into the database
-	query := "INSERT INTO contactsdb (name, number, favorite, notes) VALUES ($1, $2, $3)"
-	_, err = ch.db.Exec(context.Background(), query, newContact.Name, newContact.Number, newContact.Favorite, newContact.Notes)
+	query := "INSERT INTO contactsdb (name, number, favorite, notes) VALUES ($1, $2, $3, $4)"
+	_, err = ch.Db.Exec(context.Background(), query, newContact.Name, newContact.Number, newContact.Favorite, newContact.Notes)
 	if err != nil {
 		fmt.Fprintf( os.Stderr, "Error adding contact into db: %v", err)
 	}	

@@ -29,20 +29,22 @@ func CreateServer() *Server {
 func (serv *Server) defineRoutes() {	
 
 	homeHandler := &handlers.Home{}
-	serv.mux.HandleFunc("GET /", homeHandler.GoHome)
+	serv.mux.HandleFunc("/", homeHandler.GoHome)
 	
 	// Defining the routes for the API
-	// FIXME: fix init of pgxpool driver in this handler
-	contactsHandler := &handlers.ContactsHandler{db: serv.db}
-	serv.mux.HandleFunc("GET /api/v1/getContact", contactsHandler.GetContact)
+	contactsHandler := &handlers.ContactsHandler{Db: serv.db}
 
-	serv.mux.HandleFunc("POST /api/v1/addContact", contactsHandler.AddContact)
+	serv.mux.HandleFunc("/api/v1/test", contactsHandler.Test)
 	
-	serv.mux.HandleFunc("DELETE /api/v1/removeContact", contactsHandler.RemoveContact)
+	serv.mux.HandleFunc("/api/v1/getContact", contactsHandler.GetContact)
 
-	serv.mux.HandleFunc("PUT /api/v1/favoriteContact", contactsHandler.FavoriteContact)
+	serv.mux.HandleFunc("/api/v1/addContact", contactsHandler.AddContact)
+	
+	serv.mux.HandleFunc("/api/v1/removeContact", contactsHandler.RemoveContact)
 
-	serv.mux.HandleFunc("PUT /api/v1/addNote", contactsHandler.AddNotes)
+	serv.mux.HandleFunc("/api/v1/favoriteContact", contactsHandler.FavoriteContact)
+
+	serv.mux.HandleFunc("/api/v1/addNote", contactsHandler.AddNotes)
 }
 
 func (serv *Server) connectToDatabase() {
