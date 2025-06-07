@@ -1,13 +1,12 @@
 package models
 
 import (
-	"github.com/jackc/pgx/v5"
 )
 
 type Contact struct {
-	Name		string
-	Number 		uint64
-	Favorite    bool
-	Notes 		string
+	Name		string     `json:"name"`
+	Number 		string     `json:"number"`
+	Favorite    bool       `json:"favorite"`
+	Notes 		string     `json:"notes"`
 }
 

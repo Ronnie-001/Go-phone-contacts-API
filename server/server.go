@@ -13,6 +13,7 @@ import (
 	"github.com/joho/godotenv" // used to load .env file
 )
 
+// Group dependencies
 type Server struct {
 	mux *http.ServeMux
 	db *pgxpool.Pool
@@ -26,20 +27,22 @@ func CreateServer() *Server {
 }
 
 func (serv *Server) defineRoutes() {	
+
 	homeHandler := &handlers.Home{}
-	http.HandleFunc("GET /", homeHandler.GoHome)
+	serv.mux.HandleFunc("GET /", homeHandler.GoHome)
 	
 	// Defining the routes for the API
-	contactsHandler := &handlers.ContactsHandler{}
-	http.HandleFunc("GET /api/v1/getContact", contactsHandler.GetContact)
+	// FIXME: fix init of pgxpool driver in this handler
+	contactsHandler := &handlers.ContactsHandler{db: serv.db}
+	serv.mux.HandleFunc("GET /api/v1/getContact", contactsHandler.GetContact)
 
-	http.HandleFunc("POST /api/v1/addContact", contactsHandler.AddContact)
+	serv.mux.HandleFunc("POST /api/v1/addContact", contactsHandler.AddContact)
 	
-	http.HandleFunc("DELETE /api/v1/removeContact", contactsHandler.RemoveContact)
+	serv.mux.HandleFunc("DELETE /api/v1/removeContact", contactsHandler.RemoveContact)
 
-	http.HandleFunc("PUT /api/v1/favoriteContact", contactsHandler.FavoriteContact)
+	serv.mux.HandleFunc("PUT /api/v1/favoriteContact", contactsHandler.FavoriteContact)
 
-	http.HandleFunc("PUT /api/v1/addNote", contactsHandler.AddNotes)
+	serv.mux.HandleFunc("PUT /api/v1/addNote", contactsHandler.AddNotes)
 }
 
 func (serv *Server) connectToDatabase() {
@@ -59,8 +62,14 @@ func (serv *Server) connectToDatabase() {
 	serv.db = db
 }
 
+func (serv *Server) pingDB(ctx context.Context) error {
+	return serv.db.Ping(ctx)
+}
+
 func StartServer() {
 	server := CreateServer()
+	server.connectToDatabase()
 	server.defineRoutes()
+	server.pingDB(context.Background())
 	http.ListenAndServe(":8080", server.mux)
 }
