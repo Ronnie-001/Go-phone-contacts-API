@@ -9,29 +9,28 @@ import (
 
 	"go-phone-contacts-api/handlers"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"	
 	"github.com/joho/godotenv" // used to load .env file
 )
 
 type Server struct {
 	mux *http.ServeMux
+	db *pgxpool.Pool
 }
 
 func CreateServer() *Server {
 	s := &Server{
 		mux: http.NewServeMux(),
 	}	
-
 	return s
 }
 
 func (serv *Server) defineRoutes() {	
 	homeHandler := &handlers.Home{}
-
 	http.HandleFunc("GET /", homeHandler.GoHome)
 	
+	// Defining the routes for the API
 	contactsHandler := &handlers.ContactsHandler{}
-
 	http.HandleFunc("GET /api/v1/getContact", contactsHandler.GetContact)
 
 	http.HandleFunc("POST /api/v1/addContact", contactsHandler.AddContact)
@@ -44,19 +43,20 @@ func (serv *Server) defineRoutes() {
 }
 
 func (serv *Server) connectToDatabase() {
-
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}	
-
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL")) // add the database URL here.
+	
+	// Creating a connection pool
+	db, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error connecting to the database: %v\n", err)	
 		os.Exit(1)
 	}
-
-	defer conn.Close(context.Background())
+	
+	// Adding connection pool to the Server struct
+	serv.db = db
 }
 
 func StartServer() {

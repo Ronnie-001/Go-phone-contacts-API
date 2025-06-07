@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"go-phone-contacts-api/models"
+
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
-
-	"go-phone-contacts-api/models"
+	
 )
 
 type Home struct{}
@@ -20,6 +21,7 @@ type ContactsHandler struct{}
 func (ch *ContactsHandler) AddContact(w http.ResponseWriter, r *http.Request) {
 	var newContact models.Contact
 	
+	// Decode the JSON body that has been recieved
 	err := json.NewDecoder(r.Body).Decode(&newContact)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error decoding HTTP request body: %v", err)
