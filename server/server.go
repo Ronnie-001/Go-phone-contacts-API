@@ -40,11 +40,11 @@ func (serv *Server) defineRoutes() {
 
 	serv.mux.HandleFunc("/api/v1/addContact", contactsHandler.AddContact)
 	
-	serv.mux.HandleFunc("/api/v1/removeContact", contactsHandler.RemoveContact)
+	serv.mux.HandleFunc("/api/v1/removeContact/", contactsHandler.RemoveContact)
 
-	serv.mux.HandleFunc("/api/v1/favoriteContact", contactsHandler.FavoriteContact)
+	serv.mux.HandleFunc("/api/v1/favoriteContact/", contactsHandler.FavoriteContact)
 
-	serv.mux.HandleFunc("/api/v1/addNote", contactsHandler.AddNotes)
+	serv.mux.HandleFunc("/api/v1/unfavoriteContact/", contactsHandler.UnfavoriteContact)
 }
 
 func (serv *Server) connectToDatabase() {

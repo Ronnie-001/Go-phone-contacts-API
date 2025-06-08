@@ -64,16 +64,38 @@ func (ch *ContactsHandler) GetContact(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ch *ContactsHandler) RemoveContact(w http.ResponseWriter, r *http.Request) {
+		
+	query := "DELETE FROM contacts WHERE contact_id=$1"
+	id := strings.TrimPrefix(r.URL.Path, "/api/v1/removeContact/") 
 	
+	_, err := ch.Db.Exec(context.Background(), query, id)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error removing contact from the database: %v", err)
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 
 func (ch *ContactsHandler) FavoriteContact(w http.ResponseWriter, r *http.Request) {
+	query := "UPDATE contacts SET favorite=true WHERE contact_id=$1"
+	id := strings.TrimPrefix(r.URL.Path, "/api/v1/favoriteContact/") 
 	
+	_, err := ch.Db.Exec(context.Background(), query, id)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error upddating favorite contact in database: %v", err)
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 
-func (ch *ContactsHandler) AddNotes(w http.ResponseWriter, r *http.Request) {
+func (ch *ContactsHandler) UnfavoriteContact(w http.ResponseWriter, r *http.Request) {
+	query := "UPDATE contacts SET favorite=false WHERE contact_id=$1"
+	id := strings.TrimPrefix(r.URL.Path, "/api/v1/unfavoriteContact/") 
 	
+	_, err := ch.Db.Exec(context.Background(), query, id)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error upddating favorite contact in database: %v", err)
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
