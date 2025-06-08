@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"go-phone-contacts-api/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -15,17 +16,16 @@ import (
 type Home struct{}
 
 func (h *Home) GoHome(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("HAHA"))
+	w.Write([]byte("Home handler"))
 } 
 
-type ContactsHandler struct{
+type ContactsHandler struct {
 	Db *pgxpool.Pool
 }
 
 func (ch *ContactsHandler) Test(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("testing"))
 }
-
 
 func (ch *ContactsHandler) AddContact(w http.ResponseWriter, r *http.Request) {
 	var newContact models.Contact
@@ -36,11 +36,11 @@ func (ch *ContactsHandler) AddContact(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(os.Stderr, "Error decoding HTTP request body: %v", err)
 	}
 
-	// Create & execute SQL statement to add Contact into the database
-	query := "INSERT INTO contactsdb (name, number, favorite, notes) VALUES ($1, $2, $3, $4)"
+	// Create & execute SQL statement to add Contact into the database.
+	query := "INSERT INTO contacts (name, number, favorite, notes) VALUES ($1, $2, $3, $4)"
 	_, err = ch.Db.Exec(context.Background(), query, newContact.Name, newContact.Number, newContact.Favorite, newContact.Notes)
 	if err != nil {
-		fmt.Fprintf( os.Stderr, "Error adding contact into db: %v", err)
+		fmt.Fprintf( os.Stderr, "Error adding contact into database: %v", err)
 	}	
 	
 	w.WriteHeader(http.StatusOK)
@@ -48,8 +48,19 @@ func (ch *ContactsHandler) AddContact(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ch *ContactsHandler) GetContact(w http.ResponseWriter, r *http.Request) {
+	var contact models.Contact
+	query := "SELECT * FROM contacts WHERE contact_id=$1"
+	
+	// Grab the id from the URL path by trimming it's prefix.
+	id := strings.TrimPrefix(r.URL.Path, "/api/v1/getContact/") 
 
+	err := ch.Db.QueryRow(context.Background(), query, id).Scan(&contact.Id, &contact.Name, &contact.Number, &contact.Favorite, &contact.Notes)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error fetching contact from database: %v", err)
+	}	
+	
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(contact)
 }
 
 func (ch *ContactsHandler) RemoveContact(w http.ResponseWriter, r *http.Request) {

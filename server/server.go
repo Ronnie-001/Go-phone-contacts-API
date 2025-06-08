@@ -36,7 +36,7 @@ func (serv *Server) defineRoutes() {
 
 	serv.mux.HandleFunc("/api/v1/test", contactsHandler.Test)
 	
-	serv.mux.HandleFunc("/api/v1/getContact", contactsHandler.GetContact)
+	serv.mux.HandleFunc("/api/v1/getContact/", contactsHandler.GetContact)
 
 	serv.mux.HandleFunc("/api/v1/addContact", contactsHandler.AddContact)
 	
