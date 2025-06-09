@@ -49,7 +49,7 @@ contact_id INTEGER PRIMARY KEY;
 name TEXT NOT NULL;
 number TEXT NOT NULL;
 favorite BOOLEAN;
-notes TEXT;
+notes TEXT
 );
 ```
 # Installation
