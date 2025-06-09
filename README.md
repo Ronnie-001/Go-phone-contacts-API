@@ -44,7 +44,7 @@ CREATE DATABASE contactsdb;
 ```
 Create the `contacts` table:
 ```
-CREATE DATABASE contacta (
+CREATE DATABASE contacts (
 contact_id INTEGER PRIMARY KEY;
 name TEXT NOT NULL;
 number TEXT NOT NULL;
