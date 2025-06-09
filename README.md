@@ -14,7 +14,7 @@ Aims of this project:
 - Unfavorite a contact `api/v1/unfavoriteContact`
 
  # Structure of project
-`.
+.
 ├ /handlers
 |  └── handlers.go
 ├ /modles
@@ -27,4 +27,4 @@ Aims of this project:
 ├── go.sum
 ├── main.go
 ├── README.md
-`
+
