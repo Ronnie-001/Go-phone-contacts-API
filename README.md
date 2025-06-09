@@ -28,3 +28,41 @@ Aims of this project:
 ├── main.go
 ├── README.md
 ```
+
+# Prerequisites
+To use the API, you first need to manually create the PostgreSQL database
+```
+sudo -iu postgres
+```
+Then enter the command line client:
+```
+psql
+```
+Create the database & connect to it:
+```
+CREATE DATABASE contactsdb;
+```
+Create the `contacts` table:
+```
+CREATE DATABASE contacta (
+contact_id INTEGER PRIMARY KEY;
+name TEXT NOT NULL;
+number TEXT NOT NULL;
+favorite BOOLEAN;
+notes TEXT;
+);
+```
+# Installation
+Clone the GitHub repository:
+```
+git clone https://github.com/Ronnie-001/Go-phone-contacts-API.git
+cd Go-phone-contacts-API/
+```
+Install all dependencies:
+```
+go mod tidy
+```
+Within the .env file, add the database connection string:
+```
+DATABASE_URL="postgres://postgres:postgres@localhost:5432/contactsdb"
+```
