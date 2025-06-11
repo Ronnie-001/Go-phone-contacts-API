@@ -59,7 +59,7 @@ func (serv *Server) connectToDatabase() {
 		fmt.Fprintf(os.Stderr, "Error connecting to the database: %v\n", err)	
 		os.Exit(1)
 	}
-	
+
 	// Adding connection pool to the Server struct
 	serv.db = db
 }

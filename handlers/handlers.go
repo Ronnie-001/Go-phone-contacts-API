@@ -45,6 +45,7 @@ func (ch *ContactsHandler) AddContact(w http.ResponseWriter, r *http.Request) {
 	
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(newContact)
+	
 }
 
 func (ch *ContactsHandler) GetContact(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +80,6 @@ func (ch *ContactsHandler) RemoveContact(w http.ResponseWriter, r *http.Request)
 }
 
 func (ch *ContactsHandler) FavoriteContact(w http.ResponseWriter, r *http.Request) {
-	
 	// Favorite a number. 
 	query := "UPDATE contacts SET favorite=true WHERE contact_id=$1"
 
