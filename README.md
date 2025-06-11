@@ -28,7 +28,6 @@ Aims of this project:
 ├── main.go
 ├── README.md
 ```
-
 # Prerequisites
 To use the API, you first need to manually create the PostgreSQL database
 ```
@@ -65,4 +64,8 @@ go mod tidy
 Within the .env file, add the database connection string:
 ```
 DATABASE_URL="postgres://postgres:postgres@localhost:5432/contactsdb"
+```
+Alternativley, if you have docker installed, you can simply run the docker container:
+```
+docker run -d -p 8080:8080 --name phone-contacts-api ronnie178/phone-contacts-api:latest
 ```
